@@ -1,0 +1,65 @@
+{
+  "name": "L'fhama Mission Control",
+  "short_name": "Mission Control",
+  "description": "Task Board, Memory Vault, and Command Calendar for L'fhama",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icon-72.jpg",
+      "sizes": "72x72",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-96.jpg",
+      "sizes": "96x96",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-128.jpg",
+      "sizes": "128x128",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-144.jpg",
+      "sizes": "144x144",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-152.jpg",
+      "sizes": "152x152",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-192.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-384.jpg",
+      "sizes": "384x384",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}

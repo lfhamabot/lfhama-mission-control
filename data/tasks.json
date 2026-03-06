@@ -1,0 +1,45 @@
+[
+  {
+    "id": "1",
+    "title": "Set up AzureAtlas eBay seller account",
+    "assignee": "Si Hassan",
+    "status": "done",
+    "notes": "Create eBay account with username AzureAtlas, complete ID verification",
+    "created": "2026-03-06T08:00:00.000Z",
+    "updated": "2026-03-06T09:08:43.468Z"
+  },
+  {
+    "id": "2",
+    "title": "Fix Phone Tracker IMEI display issue",
+    "assignee": "L'fhama",
+    "status": "done",
+    "notes": "Investigated: IMEI 883838383848488 is test data for Device ID 8. Left as-is per user request. Can be updated manually in app.",
+    "created": "2026-03-06T07:56:00.000Z",
+    "updated": "2026-03-06T13:33:00.000Z"
+  },
+  {
+    "id": "3",
+    "title": "Sign up for AutoDS trial",
+    "assignee": "Si Hassan",
+    "status": "done",
+    "notes": "14-day trial for dropshipping automation platform",
+    "created": "2026-03-06T08:00:00.000Z",
+    "updated": "2026-03-06T08:32:16.721Z"
+  },
+  {
+    "id": "4",
+    "title": "Deploy Mission Control dashboard",
+    "assignee": "L'fhama",
+    "status": "done",
+    "notes": "Create lfhama.bouchenafa.tech with Task Board, Memory Vault, and Command Calendar",
+    "created": "2026-03-06T08:00:00.000Z"
+  },
+  {
+    "id": "6",
+    "title": "Create L'fhama official avatar",
+    "assignee": "Si Hassan",
+    "status": "done",
+    "notes": "3D Pixar-style lobster with fez and name tag - now live in Mission Control",
+    "created": "2026-03-06T08:55:00.000Z"
+  }
+]

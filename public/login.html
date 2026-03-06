@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>🔐 Login | L'fhama Mission Control</title>
+    <link rel="icon" type="image/jpeg" href="lfhama-avatar.jpg">
+    <link rel="apple-touch-icon" href="lfhama-avatar.jpg">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --bg2: #141414;
+            --bg3: #1a1a1a;
+            --border: rgba(255,255,255,0.07);
+            --text: #f0f0f0;
+            --text2: #888;
+            --purple: #8b5cf6;
+            --green: #10b981;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+        
+        /* Mascot Container */
+        .mascot-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .mascot {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--purple);
+            box-shadow: 0 0 60px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .mascot.watching {
+            animation: bounce 2s infinite;
+        }
+        
+        .mascot.peeking {
+            transform: scale(0.95);
+            filter: brightness(0.7);
+        }
+        
+        .mascot.hiding {
+            transform: scale(0.9) translateY(20px);
+            filter: brightness(0.5);
+        }
+        
+        .mascot.happy {
+            animation: celebrate 0.6s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes celebrate {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        /* Peekaboo overlay */
+        .hands {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        
+        .hands.visible {
+            opacity: 1;
+        }
+        
+        /* PIN Display */
+        .pin-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--bg3);
+            border: 2px solid var(--border);
+            transition: all 0.2s;
+        }
+        
+        .pin-dot.filled {
+            background: var(--purple);
+            border-color: var(--purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+        
+        .pin-dot.error {
+            background: #ef4444;
+            border-color: #ef4444;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Status Message */
+        .status-message {
+            font-size: 14px;
+            color: var(--text2);
+            margin-bottom: 20px;
+            height: 20px;
+        }
+        
+        .status-message.typing {
+            color: var(--purple);
+        }
+        
+        .status-message.hidden {
+            color: var(--green);
+        }
+        
+        /* Keypad */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        
+        .key {
+            aspect-ratio: 1;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text);
+            font-size: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        
+        .key:hover {
+            background: var(--bg3);
+            border-color: var(--purple);
+            transform: translateY(-2px);
+        }
+        
+        .key:active {
+            transform: scale(0.95);
+            background: var(--purple);
+        }
+        
+        .key.delete {
+            font-size: 20px;
+            color: #ef4444;
+        }
+        
+        .key.delete:hover {
+            border-color: #ef4444;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+        
+        .footer strong {
+            color: var(--purple);
+        }
+        
+        /* Error Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ef4444;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Mascot -->
+        <div class="mascot-container">
+            <img src="lfhama-avatar.jpg" class="mascot watching" id="mascot" alt="L'fhama">
+            <div class="hands" id="hands">🙈</div>
+        </div>
+        
+        <!-- PIN Display -->
+        <div class="pin-display" id="pinDisplay">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+        
+        <!-- Status Message -->
+        <div class="status-message" id="statusMessage">Enter your 6-digit PIN</div>
+        
+        <!-- Keypad -->
+        <div class="keypad">
+            <button class="key" onclick="enterDigit(1)">1</button>
+            <button class="key" onclick="enterDigit(2)">2</button>
+            <button class="key" onclick="enterDigit(3)">3</button>
+            <button class="key" onclick="enterDigit(4)">4</button>
+            <button class="key" onclick="enterDigit(5)">5</button>
+            <button class="key" onclick="enterDigit(6)">6</button>
+            <button class="key" onclick="enterDigit(7)">7</button>
+            <button class="key" onclick="enterDigit(8)">8</button>
+            <button class="key" onclick="enterDigit(9)">9</button>
+            <button class="key" style="visibility:hidden;"></button>
+            <button class="key" onclick="enterDigit(0)">0</button>
+            <button class="key delete" onclick="deleteDigit()">⌫</button>
+        </div>
+        
+        <div class="footer">
+            <strong>Mission Control</strong> | Secured by L'fhama 🦞
+        </div>
+    </div>
+    
+    <div class="toast" id="toast">Incorrect PIN. Try again.</div>
+
+    <script>
+        const CORRECT_PIN = '903341';
+        let currentPin = '';
+        const mascot = document.getElementById('mascot');
+        const hands = document.getElementById('hands');
+        const statusMessage = document.getElementById('statusMessage');
+        const toast = document.getElementById('toast');
+        
+        // Track if user is typing (for eye animation)
+        let typingTimer;
+        
+        function enterDigit(digit) {
+            if (currentPin.length >= 6) return;
+            
+            currentPin += digit;
+            updateDisplay();
+            
+            // Mascot peeks when typing
+            mascot.classList.remove('watching', 'hiding');
+            mascot.classList.add('peeking');
+            
+            statusMessage.textContent = 'Entering PIN...';
+            statusMessage.className = 'status-message typing';
+            
+            // Reset timer
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                mascot.classList.remove('peeking');
+                mascot.classList.add('watching');
+            }, 500);
+            
+            // Check if complete
+            if (currentPin.length === 6) {
+                setTimeout(checkPin, 300);
+            }
+        }
+        
+        function deleteDigit() {
+            if (currentPin.length === 0) return;
+            currentPin = currentPin.slice(0, -1);
+            updateDisplay();
+            
+            mascot.classList.remove('hiding');
+            mascot.classList.add('peeking');
+            
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                mascot.classList.remove('peeking');
+                mascot.classList.add('watching');
+            }, 300);
+        }
+        
+        function updateDisplay() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('filled', index < currentPin.length);
+                dot.classList.remove('error');
+            });
+        }
+        
+        function checkPin() {
+            if (currentPin === CORRECT_PIN) {
+                // Success!
+                mascot.classList.remove('peeking', 'watching');
+                mascot.classList.add('happy');
+                hands.classList.remove('visible');
+                
+                statusMessage.textContent = 'Access granted! 🎉';
+                statusMessage.className = 'status-message';
+                statusMessage.style.color = '#10b981';
+                
+                // Store session
+                sessionStorage.setItem('lfhama_auth', 'true');
+                sessionStorage.setItem('lfhama_auth_time', Date.now());
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 800);
+            } else {
+                // Wrong PIN
+                mascot.classList.remove('peeking');
+                mascot.classList.add('hiding');
+                hands.classList.add('visible');
+                
+                const dots = document.querySelectorAll('.pin-dot');
+                dots.forEach(dot => dot.classList.add('error'));
+                
+                statusMessage.textContent = 'Incorrect PIN!';
+                statusMessage.style.color = '#ef4444';
+                
+                showToast();
+                
+                setTimeout(() => {
+                    currentPin = '';
+                    updateDisplay();
+                    mascot.classList.remove('hiding');
+                    mascot.classList.add('watching');
+                    hands.classList.remove('visible');
+                    statusMessage.textContent = 'Enter your 6-digit PIN';
+                    statusMessage.style.color = '';
+                    statusMessage.className = 'status-message';
+                }, 1200);
+            }
+        }
+        
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        // Mascot bounces while waiting
+        setInterval(() => {
+            if (mascot.classList.contains('watching')) {
+                mascot.style.transform = 'translateY(-5px)';
+                setTimeout(() => {
+                    mascot.style.transform = 'translateY(0)';
+                }, 200);
+            }
+        }, 3000);
+        
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                enterDigit(parseInt(e.key));
+            } else if (e.key === 'Backspace') {
+                deleteDigit();
+            } else if (e.key === 'Enter' && currentPin.length === 6) {
+                checkPin();
+            }
+        });
+        
+        // Check if already logged in
+        if (sessionStorage.getItem('lfhama_auth') === 'true') {
+            const authTime = parseInt(sessionStorage.getItem('lfhama_auth_time') || 0);
+            if (Date.now() - authTime < 3600000) { // 1 hour session
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f0f">
+    <meta name="msapplication-TileColor" content="#0f0f0f">
+    <meta name="msapplication-TileImage" content="icon-144.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="lfhama-avatar.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Mission Control | L'fhama</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --bg2: #141414;
+            --bg3: #1a1a1a;
+            --bg4: #1f1f1f;
+            --border: rgba(255,255,255,0.07);
+            --border2: rgba(255,255,255,0.13);
+            --text: #f0f0f0;
+            --text2: #888;
+            --text3: #a0a0a0;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header-sub {
+            font-size: 12px;
+            color: var(--text3);
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 4px;
+            background: var(--bg3);
+            padding: 4px;
+            border-radius: 10px;
+        }
+        
+        .nav-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn:hover { color: var(--text); }
+        .nav-btn.active {
+            background: var(--bg4);
+            color: var(--text);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active { display: block; }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text3);
+            margin-bottom: 24px;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+        
+        .btn-primary:hover { background: #2563eb; }
+        
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        /* Task Board */
+        .kanban {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .kanban-column {
+            background: var(--bg3);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 400px;
+        }
+        
+        .kanban-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text3);
+        }
+        
+        .kanban-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .kanban-dot.todo { background: var(--amber); }
+        .kanban-dot.progress { background: var(--blue); }
+        .kanban-dot.done { background: var(--green); }
+        
+        .task-card {
+            background: var(--bg4);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .task-card:hover {
+            border-color: var(--border2);
+            transform: translateY(-2px);
+        }
+        
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text3);
+        }
+        
+        .task-assignee {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-you { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .badge-me { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        
+        /* Memory Vault */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .memory-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .memory-card:hover {
+            border-color: var(--blue);
+        }
+        
+        .memory-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        
+        .memory-date {
+            font-size: 11px;
+            color: var(--text3);
+        }
+        
+        .memory-preview {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 8px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 12px;
+        }
+        
+        .calendar-day.today {
+            border-color: var(--blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .cron-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .cron-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cron-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .cron-schedule {
+            font-size: 12px;
+            color: var(--text3);
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text3);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text3);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Search */
+        .search-box {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-size: 14px;
+            width: 280px;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .kanban { grid-template-columns: 1fr; }
+            .calendar-grid { grid-template-columns: repeat(7, 1fr); gap: 4px; }
+            .memory-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem("lfhama_auth") !== "true") {
+            window.location.href = "/login";
+        }
+    </script>
+    <header class="header">
+        <div>
+            <h1>🎯 Mission Control</h1>
+            <div class="header-sub">L'fhama Operating System</div>
+        </div>
+        <nav class="nav">
+            <button class="nav-btn active" onclick="switchSection('tasks')">📋 Tasks</button>
+            <button class="nav-btn" onclick="switchSection('memory')">🧠 Memory</button>
+            <button class="nav-btn" onclick="switchSection('calendar')">📅 Calendar</button>
+            <button class="nav-btn" onclick="switchSection('team')">👥 Team</button>
+            <button class="nav-btn" onclick="logout()" style="color:#ef4444;">🚪 Logout</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- TASK BOARD SECTION -->
+        <section id="section-tasks" class="section active">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div>
+                    <h2 class="section-title">📋 Task Board</h2>
+                    <p class="section-subtitle">Track what we're working on</p>
+                </div>
+                <button class="btn btn-primary" onclick="openTaskModal()">+ New Task</button>
+            </div>
+            
+            <div class="kanban">
+                <!-- To Do Column -->
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <span class="kanban-dot todo"></span>
+                        To Do
+                        <span id="count-todo" style="margin-left:auto;font-size:11px;color:var(--text3);">0</span>
+                    </div>
+                    <div id="column-todo"></div>
+                </div>
+                
+                <!-- In Progress Column -->
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <span class="kanban-dot progress"></span>
+                        In Progress
+                        <span id="count-progress" style="margin-left:auto;font-size:11px;color:var(--text3);">0</span>
+                    </div>
+                    <div id="column-progress"></div>
+                </div>
+                
+                <!-- Done Column -->
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <span class="kanban-dot done"></span>
+                        Done
+                        <span id="count-done" style="margin-left:auto;font-size:11px;color:var(--text3);">0</span>
+                    </div>
+                    <div id="column-done"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEMORY VAULT SECTION -->
+        <section id="section-memory" class="section">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div>
+                    <h2 class="section-title">🧠 Memory Vault</h2>
+                    <p class="section-subtitle">Search through all our memories</p>
+                </div>
+                <input type="text" id="memory-search" class="search-box" placeholder="🔍 Search memories..." onkeyup="searchMemories()">
+            </div>
+            
+            <div id="memory-list" class="memory-grid">
+                <div style="text-align:center;color:var(--text3);padding:60px;">
+                    Loading memories...
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMAND CALENDAR SECTION -->
+        <section id="section-calendar" class="section">
+            <h2 class="section-title">📅 Command Calendar</h2>
+            <p class="section-subtitle">All scheduled tasks and cron jobs</p>
+            
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <span class="card-title">⏰ Active Cron Jobs</span>
+                    <button class="btn btn-sm" onclick="loadCronJobs()">🔄 Refresh</button>
+                </div>
+                <div id="cron-list" class="cron-list">
+                    <div style="text-align:center;color:var(--text3);padding:40px;">
+                        Loading scheduled tasks...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top:20px;">
+                <div class="card-header">
+                    <span class="card-title">📊 System Status</span>
+                </div>
+                <div id="system-status" style="padding:10px;">
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                        <div>
+                            <div style="font-size:11px;color:var(--text3);">Last Check</div>
+                            <div id="last-check">--</div>
+                        </div>
+                        <div>
+                            <div style="font-size:11px;color:var(--text3);">Active Jobs</div>
+                            <div id="active-jobs">--</div>
+                        </div>
+                        <div>
+                            <div style="font-size:11px;color:var(--text3);">Next Task</div>
+                            <div id="next-task">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEAM SECTION -->
+        <section id="section-team" class="section">
+            <h2 class="section-title">👥 Team Structure</h2>
+            <p class="section-subtitle">Meet the crew that gets things done</p>
+            
+            <!-- L'fhama (Core) -->
+            <div class="card" style="margin-top:20px;border:2px solid var(--purple);">
+                <div style="display:flex;gap:16px;align-items:center;">
+                    <img src="lfhama-avatar.jpg" style="width:64px;height:64px;border-radius:16px;object-fit:cover;border:2px solid var(--purple);">
+                    <div style="flex:1;">
+                        <div style="font-size:18px;font-weight:700;">L'fhama</div>
+                        <div style="font-size:13px;color:var(--purple);font-weight:600;">Core Agent / Mission Control</div>
+                        <div style="font-size:12px;color:var(--text3);margin-top:4px;">Primary operative. Coordinates all sub-agents. Your main point of contact.</div>
+                    </div>
+                    <div class="badge" style="background:rgba(139,92,246,0.2);color:#a78bfa;">ACTIVE</div>
+                </div>
+            </div>
+            
+            <!-- Developers -->
+            <div style="margin-top:24px;">
+                <div style="font-size:14px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:18px;">💻</span>
+                    Development Squad
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">👨‍💻</div>
+                            <div>
+                                <div style="font-weight:600;">Claude</div>
+                                <div style="font-size:11px;color:var(--text3);">Senior Developer</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Complex coding, debugging, architecture decisions. Full-stack wizard.</div>
+                    </div>
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#10b981,#059669);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">⚡</div>
+                            <div>
+                                <div style="font-weight:600;">DeepSeek</div>
+                                <div style="font-size:11px;color:var(--text3);">Quick Fix Dev</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Fast, cheap tasks. Quick scripts, simple features, rapid prototyping.</div>
+                    </div>
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🔧</div>
+                            <div>
+                                <div style="font-weight:600;">Kimi</div>
+                                <div style="font-size:11px;color:var(--text3);">Code Assistant</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Long-context coding. 262k token window. Great for large codebases.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Social Media -->
+            <div style="margin-top:24px;">
+                <div style="font-size:14px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:18px;">📱</span>
+                    Social Media Team
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#ec4899,#db2777);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">📢</div>
+                            <div>
+                                <div style="font-weight:600;">Marketing</div>
+                                <div style="font-size:11px;color:var(--text3);">Marketing Agent</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Copywriting, CRO, SEO, email sequences. 29 marketing skills loaded.</div>
+                    </div>
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🎨</div>
+                            <div>
+                                <div style="font-weight:600;">Content</div>
+                                <div style="font-size:11px;color:var(--text3);">Content Creator</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Social content, content strategy, referral programs, growth hacking.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Researchers -->
+            <div style="margin-top:24px;">
+                <div style="font-size:14px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:18px;">🔍</span>
+                    Research Department
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#06b6d4,#0891b2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🌐</div>
+                            <div>
+                                <div style="font-weight:600;">Web Scout</div>
+                                <div style="font-size:11px;color:var(--text3);">Web Researcher</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Market research, competitor analysis, product research, pricing intel.</div>
+                    </div>
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">📊</div>
+                            <div>
+                                <div style="font-weight:600;">Analyst</div>
+                                <div style="font-size:11px;color:var(--text3);">Data Analyst</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Data analysis, trend forecasting, financial modeling, reports.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Designers -->
+            <div style="margin-top:24px;">
+                <div style="font-size:14px;font-weight:700;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:18px;">🎨</span>
+                    Design Studio
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#f43f5e,#e11d48);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">✨</div>
+                            <div>
+                                <div style="font-weight:600;">UI/UX</div>
+                                <div style="font-size:11px;color:var(--text3);">Interface Designer</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">UI design, UX flows, wireframes, design systems, mockups.</div>
+                    </div>
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+                            <div style="width:40px;height:40px;background:linear-gradient(135deg,#84cc16,#65a30d);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🖼️</div>
+                            <div>
+                                <div style="font-weight:600;">Visual</div>
+                                <div style="font-size:11px;color:var(--text3);">Visual Designer</div>
+                            </div>
+                        </div>
+                        <div style="font-size:12px;color:var(--text2);line-height:1.5;">Graphics, logos, branding assets, social media visuals.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Usage Guide -->
+            <div class="card" style="margin-top:24px;background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">
+                <div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:10px;">💡 How to Use the Team</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+                    <strong>Just tell me what you need</strong> — "Build a landing page" → I summon the dev squad. "Research competitors" → Web Scout activates. "Design a logo" → Design Studio spins up.<br><br>
+                    I automatically route tasks to the right specialist. No need to remember who does what — just describe the outcome you want.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">📋 New Task</span>
+                <button class="modal-close" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form" onsubmit="saveTask(event)">
+                    <input type="hidden" id="task-id">
+                    <div class="form-group">
+                        <label class="form-label">Task Title</label>
+                        <input type="text" class="form-input" id="task-title" required placeholder="What needs to be done?">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Assigned To</label>
+                        <select class="form-select" id="task-assignee">
+                            <option value="Si Hassan">👤 Si Hassan (You)</option>
+                            <option value="L'fhama">🤖 L'fhama (Me)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="task-status">
+                            <option value="todo">🟡 To Do</option>
+                            <option value="progress">🔵 In Progress</option>
+                            <option value="done">🟢 Done</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea" id="task-notes" placeholder="Add details..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="width:100%;">Save Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let tasks = [];
+        let memories = [];
+        let currentSection = 'tasks';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasks();
+            loadCronJobs();
+            updateSystemStatus();
+        });
+
+        // Section Navigation
+        function switchSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`section-${section}`).classList.add('active');
+            event.target.classList.add('active');
+            
+            currentSection = section;
+            
+            if (section === 'memory') { loadMemories(); }
+            if (section === 'calendar') loadCronJobs();
+        }
+
+        // TASK BOARD
+        async function loadTasks() {
+            console.log("Loading tasks...");
+            try {
+                const res = await fetch('/api/tasks');
+                tasks = await res.json();
+                renderTasks();
+            } catch (e) {
+                console.error("LoadTasks error:", e);
+                console.error('Failed to load tasks:', e);
+            }
+        }
+
+        function renderTasks() {
+            const columns = {
+                todo: document.getElementById('column-todo'),
+                progress: document.getElementById('column-progress'),
+                done: document.getElementById('column-done')
+            };
+            
+            const counts = { todo: 0, progress: 0, done: 0 };
+            
+            Object.values(columns).forEach(col => col.innerHTML = '');
+            
+            tasks.forEach(task => {
+                counts[task.status]++;
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.onclick = () => editTask(task.id);
+                card.innerHTML = `
+                    <div class="task-title">${escapeHtml(task.title)}</div>
+                    <div class="task-meta">
+                        <span class="task-assignee">
+                            <span class="badge ${task.assignee === 'Si Hassan' ? 'badge-you' : 'badge-me'}">
+                                ${task.assignee === 'Si Hassan' ? '👤 You' : '🤖 Me'}
+                            </span>
+                        </span>
+                        <span>${new Date(task.created).toLocaleDateString()}</span>
+                    </div>
+                    ${task.notes ? `<div style="margin-top:8px;font-size:11px;color:var(--text3);">${escapeHtml(task.notes.substring(0, 60))}...</div>` : ''}
+                `;
+                columns[task.status].appendChild(card);
+            });
+            
+            document.getElementById('count-todo').textContent = counts.todo;
+            document.getElementById('count-progress').textContent = counts.progress;
+            document.getElementById('count-done').textContent = counts.done;
+        }
+
+        function openTaskModal() {
+            document.getElementById('task-form').reset();
+            document.getElementById('task-id').value = '';
+            document.getElementById('modal-title').textContent = '📋 New Task';
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('task-modal').classList.add('hidden');
+        }
+
+        async function saveTask(e) {
+            e.preventDefault();
+            
+            const task = {
+                id: document.getElementById('task-id').value || Date.now().toString(),
+                title: document.getElementById('task-title').value,
+                assignee: document.getElementById('task-assignee').value,
+                status: document.getElementById('task-status').value,
+                notes: document.getElementById('task-notes').value
+            };
+            
+            try {
+                const method = task.id && tasks.find(t => t.id === task.id) ? 'PUT' : 'POST';
+                const url = method === 'PUT' ? `/api/tasks/${task.id}` : '/api/tasks';
+                
+                await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(task)
+                });
+                
+                closeTaskModal();
+                loadTasks();
+            } catch (e) {
+                console.error("LoadTasks error:", e);
+                alert('Failed to save task: ' + e.message);
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            
+            document.getElementById('task-id').value = task.id;
+            document.getElementById('task-title').value = task.title;
+            document.getElementById('task-assignee').value = task.assignee;
+            document.getElementById('task-status').value = task.status;
+            document.getElementById('task-notes').value = task.notes || '';
+            document.getElementById('modal-title').textContent = '✏️ Edit Task';
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+
+        // MEMORY VAULT
+        async function loadMemories() {
+            console.log("Loading memories...");
+            try {
+                const res = await fetch('/api/memories');
+                memories = await res.json();
+                renderMemories();
+            } catch (e) {
+                console.error("LoadTasks error:", e);
+                document.getElementById('memory-list').innerHTML = `
+                    <div style="text-align:center;color:var(--text3);padding:60px;">
+                        Failed to load memories. Make sure you're accessing this from the server.
+                    </div>
+                `;
+            }
+        }
+
+        function renderMemories(filter = '') {
+            const list = document.getElementById('memory-list');
+            console.log("Rendering with filter:", filter);
+            console.log("Memories available:", memories.length);
+            const filtered = memories.filter(m => 
+                m.name.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:60px;">No memories found</div>';
+                return;
+            }
+            
+            list.innerHTML = filtered.map(m => `
+                <div class="memory-card" onclick="viewMemory('${m.name}')">
+                    <div class="memory-title">📄 ${escapeHtml(m.name)}</div>
+                    <div class="memory-date">${new Date(m.modified).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function searchMemories() {
+            console.log("Search triggered");
+            console.log("Memory array length:", memories.length);
+            const query = document.getElementById('memory-search').value;
+            renderMemories(query);
+        }
+
+        async function viewMemory(filename) {
+            try {
+                const res = await fetch(`/api/memories/${filename}`);
+                const data = await res.json();
+                alert(data.content.substring(0, 2000) + '...');
+            } catch (e) {
+                console.error("LoadTasks error:", e);
+                alert('Failed to load memory');
+            }
+        }
+
+        // COMMAND CALENDAR
+        async function loadCronJobs() {
+            console.log("Loading cron jobs...");
+            try {
+                const res = await fetch('/api/cron');
+                const jobs = await res.json();
+                
+                const list = document.getElementById('cron-list');
+                if (!jobs || jobs.length === 0) {
+                    list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:40px;">No scheduled tasks found</div>';
+                    return;
+                }
+                
+                list.innerHTML = jobs.map(job => `
+                    <div class="cron-item">
+                        <div>
+                            <div class="cron-name">${escapeHtml(job.name || 'Unnamed Job')}</div>
+                            <div class="cron-schedule">${formatSchedule(job.schedule)}</div>
+                        </div>
+                        <span class="badge" style="background:${job.enabled ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'};color:${job.enabled ? '#34d399' : '#f87171'};">
+                            ${job.enabled ? '✓ Active' : '✗ Disabled'}
+                        </span>
+                    </div>
+                `).join('');
+                
+                document.getElementById('active-jobs').textContent = jobs.filter(j => j.enabled).length;
+            } catch (e) {
+                console.error("LoadTasks error:", e);
+                document.getElementById('cron-list').innerHTML = `
+                    <div style="text-align:center;color:var(--text3);padding:40px;">
+                        Unable to load cron jobs. Check console for details.
+                    </div>
+                `;
+            }
+        }
+
+        function updateSystemStatus() {
+            document.getElementById('last-check').textContent = new Date().toLocaleTimeString();
+        }
+
+        // Helpers
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatSchedule(schedule) {
+            if (!schedule) return 'Unknown schedule';
+            if (schedule.kind === 'cron') return `Cron: ${schedule.expr}`;
+            if (schedule.kind === 'every') return `Every ${schedule.everyMs / 1000}s`;
+            return JSON.stringify(schedule);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('task-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'task-modal') closeTaskModal();
+        });
+    </script>
+</body>
+</html>
+
+<script>
+// Swipe Navigation for Mission Control
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, false);
+
+document.addEventListener("touchend", e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, false);
+
+function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+    
+    if (Math.abs(diff) < swipeThreshold) return;
+    
+    const sections = ['tasks', 'memory', 'calendar', 'team'];
+    const currentIdx = sections.indexOf(currentSection);
+    
+    if (diff > 0 && currentIdx < sections.length - 1) {
+        // Swipe left → next
+        switchToSection(sections[currentIdx + 1]);
+    } else if (diff < 0 && currentIdx > 0) {
+        // Swipe right → previous
+        switchToSection(sections[currentIdx - 1]);
+    }
+}
+
+function switchToSection(section) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById(`section-${section}`).classList.add('active');
+    
+    // Update nav button
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const sectionMap = { 'tasks': 0, 'memory': 1, 'calendar': 2, 'team': 3 };
+    if (navBtns[sectionMap[section]]) {
+        navBtns[sectionMap[section]].classList.add('active');
+    }
+    
+    currentSection = section;
+    
+    if (section === 'memory') { loadMemories(); }
+    if (section === 'calendar') loadCronJobs();
+    if (section === 'team') renderTeamStats();
+}
+
+// Team Statistics
+function renderTeamStats() {
+    // This can be enhanced to show active tasks per agent
+    console.log('Team section loaded');
+}
+</script>
+
+<script>
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('SW registered:', registration);
+      })
+      .catch(error => {
+        console.log('SW registration failed:', error);
+      });
+  });
+}
+</script>
+
+<!-- PWA Install Prompt -->
+<div id="install-prompt" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px 24px;box-shadow:0 10px 40px rgba(0,0,0,0.5);z-index:1000;max-width:90%;width:320px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <img src="lfhama-avatar.jpg" style="width:48px;height:48px;border-radius:12px;">
+        <div style="flex:1;">
+            <div style="font-weight:600;font-size:15px;">Install Mission Control</div>
+            <div style="font-size:12px;color:var(--text3);">Add to home screen for quick access</div>
+        </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+        <button onclick="hideInstallPrompt()" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">Not Now</button>
+        <button onclick="installPWA()" style="flex:1;background:var(--green);color:white;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Install</button>
+    </div>
+</div>
+
+<script>
+// PWA Install Prompt
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  // Show the install prompt
+  document.getElementById('install-prompt').style.display = 'block';
+});
+
+function hideInstallPrompt() {
+  document.getElementById('install-prompt').style.display = 'none';
+}
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  
+  // Show the install prompt
+  deferredPrompt.prompt();
+  
+  // Wait for the user to respond to the prompt
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('User accepted the install prompt');
+  } else {
+    console.log('User dismissed the install prompt');
+  }
+  
+  // Clear the saved prompt since it can't be used again
+  deferredPrompt = null;
+  hideInstallPrompt();
+}
+
+// Hide prompt when app is installed
+window.addEventListener('appinstalled', () => {
+  hideInstallPrompt();
+  deferredPrompt = null;
+  console.log('PWA was installed');
+});
+</script>
+
+<script>
+// Logout function
+function logout() {
+    sessionStorage.removeItem('lfhama_auth');
+    sessionStorage.removeItem('lfhama_auth_time');
+    window.location.href = '/login';
+}
+</script>

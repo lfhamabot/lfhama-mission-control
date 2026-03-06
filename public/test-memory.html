@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #0f0f0f; color: white; }
+        .log { margin: 10px 0; padding: 10px; background: #1a1a1a; border-radius: 5px; }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
+        input { padding: 10px; font-size: 16px; width: 300px; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Memory Search Test</h1>
+    <div id="logs"></div>
+    <input type="text" id="searchBox" placeholder="Type to search...">
+    <div id="results"></div>
+    
+    <script>
+        const logs = document.getElementById('logs');
+        const results = document.getElementById('results');
+        let memories = [];
+        
+        function log(msg, isError = false) {
+            const div = document.createElement('div');
+            div.className = 'log ' + (isError ? 'error' : 'success');
+            div.textContent = new Date().toLocaleTimeString() + ': ' + msg;
+            logs.appendChild(div);
+        }
+        
+        async function load() {
+            try {
+                log('Fetching memories...');
+                const res = await fetch('/api/memories');
+                log('Response status: ' + res.status);
+                
+                memories = await res.json();
+                log('Loaded ' + memories.length + ' memories');
+                
+                render();
+            } catch (e) {
+                log('ERROR: ' + e.message, true);
+            }
+        }
+        
+        function render(filter = '') {
+            log('Rendering with filter: "' + filter + '"');
+            
+            if (memories.length === 0) {
+                results.innerHTML = '<div class="log error">No memories loaded</div>';
+                return;
+            }
+            
+            const filtered = memories.filter(m => 
+                m.name.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            log('Found ' + filtered.length + ' matches');
+            
+            results.innerHTML = filtered.map(m => 
+                '<div class="log">📄 ' + m.name + '</div>'
+            ).join('');
+        }
+        
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            log('Search input: "' + e.target.value + '"');
+            render(e.target.value);
+        });
+        
+        load();
+    </script>
+</body>
+</html>
