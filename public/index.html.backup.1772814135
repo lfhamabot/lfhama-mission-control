@@ -465,8 +465,7 @@
             <div class="header-sub">L'fhama Operating System</div>
         </div>
         <nav class="nav">
-            <button class="nav-btn active" onclick="switchSection('dashboard')">📊 Dashboard</button>
-            <button class="nav-btn" onclick="switchSection('tasks')">📋 Tasks</button>
+            <button class="nav-btn active" onclick="switchSection('tasks')">📋 Tasks</button>
             <button class="nav-btn" onclick="switchSection('memory')">🧠 Memory</button>
             <button class="nav-btn" onclick="switchSection('calendar')">📅 Calendar</button>
             <button class="nav-btn" onclick="switchSection('team')">👥 Team</button>
@@ -476,77 +475,6 @@
 
     <main class="container">
         <!-- TASK BOARD SECTION -->
-        <!-- DASHBOARD OVERVIEW -->
-        <section id="section-dashboard" class="section active">
-            <h2 class="section-title">📊 Dashboard</h2>
-            <p class="section-subtitle">Today at a glance</p>
-            
-            <!-- Quick Stats Cards -->
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:20px;">
-                <div class="card" style="border-left:4px solid var(--amber);">
-                    <div style="font-size:32px;font-weight:700;">0</div>
-                    <div style="font-size:13px;color:var(--text3);">🔴 Urgent Tasks</div>
-                </div>
-                <div class="card" style="border-left:4px solid var(--blue);">
-                    <div style="font-size:32px;font-weight:700;">0</div>
-                    <div style="font-size:13px;color:var(--text3);">📧 Unread Emails</div>
-                </div>
-                <div class="card" style="border-left:4px solid var(--green);">
-                    <div style="font-size:32px;font-weight:700;">0</div>
-                    <div style="font-size:13px;color:var(--text3);">✅ Tasks Done Today</div>
-                </div>
-                <div class="card" style="border-left:4px solid var(--purple);">
-                    <div id="next-cron-time" style="font-size:18px;font-weight:700;">--:--</div>
-                    <div style="font-size:13px;color:var(--text3);">⏰ Next Scheduled</div>
-                </div>
-            </div>
-            
-            <!-- Live Widgets -->
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px;">
-                <div class="card">
-                    <div style="font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-                        ⛽ Gas Price
-                        <span style="margin-left:auto;font-size:11px;color:var(--text3);">Ohio Regular</span>
-                    </div>
-                    <div style="font-size:28px;font-weight:700;color:var(--green);">$3.25</div>
-                    <div style="font-size:12px;color:var(--text3);margin-top:4px;">↑ $0.03 from yesterday</div>
-                </div>
-                <div class="card">
-                    <div style="font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-                        🌤️ Weather
-                        <span style="margin-left:auto;font-size:11px;color:var(--text3);">Columbus, OH</span>
-                    </div>
-                    <div style="font-size:28px;font-weight:700;">--°F</div>
-                    <div style="font-size:12px;color:var(--text3);margin-top:4px;">Service unavailable</div>
-                </div>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div style="margin-top:24px;">
-                <div style="font-size:14px;font-weight:600;margin-bottom:12px;">⚡ Quick Actions</div>
-                <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                    <button onclick="openTaskModal();switchSection(tasks)" class="btn btn-primary" style="display:flex;align-items:center;gap:8px;">
-                        <span>+</span> New Task
-                    </button>
-                    <button onclick="switchSection(memory)" class="btn" style="background:var(--bg3);color:var(--text);">
-                        📝 New Note
-                    </button>
-                    <button onclick="checkEmailQuick()" class="btn" style="background:var(--bg3);color:var(--text);">
-                        📧 Check Email
-                    </button>
-                </div>
-            </div>
-            
-            <!-- AI Insights -->
-            <div class="card" style="margin-top:24px;background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.3);">
-                <div style="font-size:14px;font-weight:600;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-                    🤖 AI Insight
-                </div>
-                <div id="ai-insight" style="font-size:13px;color:var(--text2);line-height:1.6;">
-                    You complete most tasks between 2-4 AM. Consider scheduling focused work during these hours.
-                </div>
-            </div>
-        </section>
         <section id="section-tasks" class="section active">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <div>
@@ -852,7 +780,6 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            initDashboard();
             loadTasks();
             loadCronJobs();
             updateSystemStatus();
@@ -1089,23 +1016,6 @@
             if (e.target.id === 'task-modal') closeTaskModal();
         });
     </script>
-
-
-    <!-- Floating Quick Action Button -->
-    <button id="fab" onclick="toggleQuickMenu()" style="position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:var(--purple);color:white;border:none;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(139,92,246,0.4);z-index:999;transition:transform 0.3s;">+</button>
-    
-    <!-- Quick Menu -->
-    <div id="quick-menu" style="position:fixed;bottom:88px;right:24px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:8px;display:none;flex-direction:column;gap:8px;z-index:998;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
-        <button onclick="openTaskModal();toggleQuickMenu();switchSection('tasks')" style="background:transparent;border:none;color:var(--text);padding:12px 16px;text-align:left;cursor:pointer;border-radius:8px;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='transparent'">
-            📋 New Task
-        </button>
-        <button onclick="switchSection('memory');toggleQuickMenu();" style="background:transparent;border:none;color:var(--text);padding:12px 16px;text-align:left;cursor:pointer;border-radius:8px;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='transparent'">
-            📝 New Note
-        </button>
-        <button onclick="checkEmailQuick();toggleQuickMenu();" style="background:transparent;border:none;color:var(--text);padding:12px 16px;text-align:left;cursor:pointer;border-radius:8px;font-size:14px;display:flex;align-items:center;gap:8px;white-space:nowrap;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='transparent'">
-            📧 Check Email
-        </button>
-    </div>
 </body>
 </html>
 
@@ -1129,7 +1039,7 @@ function handleSwipe() {
     
     if (Math.abs(diff) < swipeThreshold) return;
     
-    const sections = ['dashboard', 'tasks', 'memory', 'calendar', 'team'];
+    const sections = ['tasks', 'memory', 'calendar', 'team'];
     const currentIdx = sections.indexOf(currentSection);
     
     if (diff > 0 && currentIdx < sections.length - 1) {
@@ -1149,7 +1059,7 @@ function switchToSection(section) {
     
     // Update nav button
     const navBtns = document.querySelectorAll('.nav-btn');
-    const sectionMap = { 'dashboard': 0, 'tasks': 1, 'memory': 2, 'calendar': 3, 'team': 4 };
+    const sectionMap = { 'tasks': 0, 'memory': 1, 'calendar': 2, 'team': 3 };
     if (navBtns[sectionMap[section]]) {
         navBtns[sectionMap[section]].classList.add('active');
     }
@@ -1251,94 +1161,3 @@ function logout() {
     window.location.href = '/login';
 }
 </script>
-
-// --- NEW FEATURES ---
-
-// Dashboard Stats
-function updateDashboardStats() {
-    const urgentTasks = tasks.filter(t => t.priority === 'urgent' && t.status !== 'done').length;
-    const doneToday = tasks.filter(t => t.status === 'done' && new Date(t.updated).toDateString() === new Date().toDateString()).length;
-    
-    // Update stat cards
-    const statCards = document.querySelectorAll('.card[style*="border-left"]');
-    if (statCards[0]) statCards[0].querySelector('div').textContent = urgentTasks;
-    if (statCards[2]) statCards[2].querySelector('div').textContent = doneToday;
-}
-
-// Quick Menu Toggle
-function toggleQuickMenu() {
-    const menu = document.getElementById('quick-menu');
-    const fab = document.getElementById('fab');
-    if (menu.style.display === 'none' || !menu.style.display) {
-        menu.style.display = 'flex';
-        fab.style.transform = 'rotate(45deg)';
-    } else {
-        menu.style.display = 'none';
-        fab.style.transform = 'rotate(0deg)';
-    }
-}
-
-// Quick Email Check
-async function checkEmailQuick() {
-    alert('📧 Checking Gmail...\n\nFound 1 unread email from Hassan.\n\nSubject: Re: Why You Should Set Up OpenClaw');
-}
-
-// Global Search
-function globalSearch() {
-    const query = document.getElementById('global-search').value.toLowerCase();
-    if (!query) return;
-    
-    // Search in tasks
-    const taskMatches = tasks.filter(t => 
-        t.title.toLowerCase().includes(query) || 
-        (t.notes && t.notes.toLowerCase().includes(query))
-    );
-    
-    // Search in memories
-    const memoryMatches = memories.filter(m => 
-        m.name.toLowerCase().includes(query)
-    );
-    
-    // Show results
-    if (taskMatches.length > 0 || memoryMatches.length > 0) {
-        let results = '🔍 Search Results:\n\n';
-        if (taskMatches.length > 0) {
-            results += '📋 Tasks:\n';
-            taskMatches.forEach(t => results += `- ${t.title}\n`);
-            results += '\n';
-        }
-        if (memoryMatches.length > 0) {
-            results += '🧠 Memories:\n';
-            memoryMatches.forEach(m => results += `- ${m.name}\n`);
-        }
-        alert(results);
-    }
-}
-
-// Update Next Cron Time
-function updateNextCron() {
-    const nextCronEl = document.getElementById('next-cron-time');
-    if (!nextCronEl) return;
-    
-    const now = new Date();
-    const nextHour = new Date(now);
-    nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-    
-    nextCronEl.textContent = nextHour.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-}
-
-// Close quick menu when clicking outside
-document.addEventListener('click', (e) => {
-    const menu = document.getElementById('quick-menu');
-    const fab = document.getElementById('fab');
-    if (menu && fab && !menu.contains(e.target) && !fab.contains(e.target)) {
-        menu.style.display = 'none';
-        fab.style.transform = 'rotate(0deg)';
-    }
-});
-
-// Initialize dashboard
-function initDashboard() {
-    updateDashboardStats();
-    updateNextCron();
-}
